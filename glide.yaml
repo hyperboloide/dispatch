@@ -1,0 +1,4 @@
+package: dev.hyperboloide.com/fred/dispatch
+import:
+- package: github.com/Sirupsen/logrus
+- package: github.com/streadway/amqp
