@@ -1,6 +1,6 @@
 install:
-  - go get github.com/Sirupsen/logrus
-  - go get github.com/streadway/amqp
+  - glide up
+
 script: go test ./... -race
 language: go
 go:
