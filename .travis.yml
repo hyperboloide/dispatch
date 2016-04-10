@@ -1,7 +1,7 @@
 install:
   - glide up
 
-script: go test ./... -race
+script: go test -race
 language: go
 go:
   - 1.5
