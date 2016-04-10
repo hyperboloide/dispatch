@@ -3,9 +3,9 @@ package dispatch_test
 import (
 	"encoding/json"
 	"errors"
+	"os"
 
 	. "github.com/hyperboloide/dispatch"
-
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -14,9 +14,14 @@ var _ = Describe("Dispatch", func() {
 
 	var queue Queue
 	var result = make(chan bool, 1)
+	var host string
 
 	It("should create a new queue and purge it", func() {
-		q, err := NewAMQPQueue("test", "amqp://guest:guest@localhost:5672/")
+		if host = os.Getenv("RABBIT_HOST"); host == "" {
+			host = "amqp://guest:guest@localhost:5672/"
+		}
+
+		q, err := NewAMQPQueue("test", host)
 		Ω(err).To(BeNil())
 		Ω(q.Purge()).To(BeNil())
 

@@ -5,11 +5,13 @@ import (
 	"github.com/streadway/amqp"
 )
 
+// AMQPQueue defines a RabbitMQ queue.
 type AMQPQueue struct {
 	Name string
 	host string
 }
 
+// NewAMQPQueue creates a new queue name to host
 func NewAMQPQueue(name, host string) (*AMQPQueue, error) {
 	queue := &AMQPQueue{name, host}
 
@@ -36,6 +38,7 @@ func NewAMQPQueue(name, host string) (*AMQPQueue, error) {
 	return queue, err
 }
 
+// Purge purges the queue
 func (queue *AMQPQueue) Purge() error {
 	conn, err := amqp.Dial(queue.host)
 	if err != nil {
@@ -53,7 +56,8 @@ func (queue *AMQPQueue) Purge() error {
 	return err
 }
 
-func (queue *AMQPQueue) SendBytes(msg []byte) error {
+// SendBytes sends a []byte on the queue
+func (queue *AMQPQueue) SendBytes(bytes []byte) error {
 
 	conn, err := amqp.Dial(queue.host)
 	if err != nil {
@@ -74,8 +78,8 @@ func (queue *AMQPQueue) SendBytes(msg []byte) error {
 		false,
 		amqp.Publishing{
 			DeliveryMode: amqp.Persistent,
-			ContentType:  "application/json",
-			Body:         msg,
+			ContentType:  "application/octet-stream",
+			Body:         bytes,
 		})
 
 	if err != nil {
@@ -90,6 +94,8 @@ func (queue *AMQPQueue) SendBytes(msg []byte) error {
 	return err
 }
 
+// ListenBytes fetch messages from the queue and then call fn
+// with a []byte.
 func (queue *AMQPQueue) ListenBytes(fn ListennerBytes) error {
 	conn, err := amqp.Dial(queue.host)
 	if err != nil {
