@@ -1,7 +1,6 @@
 package dispatch
 
 import (
-	log "github.com/Sirupsen/logrus"
 	"github.com/streadway/amqp"
 )
 
@@ -82,15 +81,6 @@ func (queue *AMQPQueue) SendBytes(bytes []byte) error {
 			Body:         bytes,
 		})
 
-	if err != nil {
-		log.WithFields(log.Fields{
-			"queue": queue.Name,
-			"error": err,
-		}).Error("Error sending message.")
-	} else {
-		log.WithField("queue", queue.Name).Info("New message sent")
-	}
-
 	return err
 }
 
@@ -134,15 +124,8 @@ func (queue *AMQPQueue) ListenBytes(fn ListennerBytes) error {
 
 	go func() {
 		for d := range msgs {
-			log.WithField("queue", queue.Name).Info("New message received.")
-
 			if err := fn(d.Body); err != nil {
 				defer d.Reject(true)
-
-				log.WithFields(log.Fields{
-					"queue": queue.Name,
-					"error": err,
-				}).Error("Error while processing message.")
 				errChan <- err
 				return
 			}

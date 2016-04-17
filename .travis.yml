@@ -1,5 +1,4 @@
 install:
-  - go get github.com/Sirupsen/logrus
   - go get github.com/streadway/amqp
   - go get github.com/onsi/ginkgo/ginkgo
   - go get github.com/onsi/gomega
