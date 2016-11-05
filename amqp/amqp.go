@@ -1,18 +1,19 @@
-package dispatch
+package amqp
 
 import (
+	"github.com/hyperboloide/dispatch"
 	"github.com/streadway/amqp"
 )
 
-// AMQPQueue defines a RabbitMQ queue.
-type AMQPQueue struct {
+// AMQP defines a RabbitMQ queue.
+type AMQP struct {
 	Name string
 	host string
 }
 
-// NewAMQPQueue creates a new queue name to host
-func NewAMQPQueue(name, host string) (*AMQPQueue, error) {
-	queue := &AMQPQueue{name, host}
+// NewAMQP creates a new AMQP queue name to host
+func NewAMQP(name, host string) (*AMQP, error) {
+	queue := &AMQP{name, host}
 
 	conn, err := amqp.Dial(queue.host)
 	if err != nil {
@@ -38,7 +39,7 @@ func NewAMQPQueue(name, host string) (*AMQPQueue, error) {
 }
 
 // Purge purges the queue
-func (queue *AMQPQueue) Purge() error {
+func (queue *AMQP) Purge() error {
 	conn, err := amqp.Dial(queue.host)
 	if err != nil {
 		return err
@@ -56,7 +57,7 @@ func (queue *AMQPQueue) Purge() error {
 }
 
 // SendBytes sends a []byte on the queue
-func (queue *AMQPQueue) SendBytes(bytes []byte) error {
+func (queue *AMQP) SendBytes(bytes []byte) error {
 
 	conn, err := amqp.Dial(queue.host)
 	if err != nil {
@@ -84,9 +85,9 @@ func (queue *AMQPQueue) SendBytes(bytes []byte) error {
 	return err
 }
 
-// ListenBytes fetch messages from the queue and then call fn
+// Listen fetch messages from the queue and then call fn
 // with a []byte.
-func (queue *AMQPQueue) ListenBytes(fn ListennerBytes) error {
+func (queue *AMQP) Listen(fn dispatch.Listenner) error {
 	conn, err := amqp.Dial(queue.host)
 	if err != nil {
 		return err

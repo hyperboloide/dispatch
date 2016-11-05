@@ -6,6 +6,7 @@ import (
 	"os"
 
 	. "github.com/hyperboloide/dispatch"
+	"github.com/hyperboloide/dispatch/amqp"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -21,7 +22,7 @@ var _ = Describe("Dispatch", func() {
 			host = "amqp://guest:guest@localhost:5672/"
 		}
 
-		q, err := NewAMQPQueue("test", host)
+		q, err := amqp.NewAMQP("test", host)
 		Ω(err).To(BeNil())
 		Ω(q.Purge()).To(BeNil())
 
@@ -62,7 +63,7 @@ var _ = Describe("Dispatch", func() {
 			return nil
 		}
 
-		Ω(queue.ListenBytes(listenner)).ToNot(BeNil())
+		Ω(queue.Listen(listenner)).ToNot(BeNil())
 		Ω(<-result).To(BeTrue())
 		close(result)
 	})

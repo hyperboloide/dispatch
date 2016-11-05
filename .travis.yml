@@ -1,13 +1,13 @@
-install:
-  - go get github.com/streadway/amqp
-  - go get github.com/onsi/ginkgo/ginkgo
-  - go get github.com/onsi/gomega
-
-script: go test -race
-
 language: go
-
 go:
   - 1.5
   - 1.6
-  - tip
+  - 1.7
+
+install:
+  - go get -v -t ./...
+  - go get github.com/onsi/ginkgo/ginkgo
+  - go get github.com/onsi/gomega
+  - export PATH=$PATH:$HOME/gopath/bin
+
+script: $HOME/gopath/bin/ginkgo -r --randomizeSuites --race --trace
